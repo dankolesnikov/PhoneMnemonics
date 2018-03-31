@@ -1,31 +1,5 @@
-import scala.util.matching._
 
-object hw4 {
-
-  // Problem 1
-
-  def tokens(input : String, patterns : List[Regex], ignored: List[Regex]) : (List[String], Int) = {
-
-    def firstMatch(input : String, patterns : List[Regex]): String = {
-      if(patterns.isEmpty) null
-      else if(patterns.head.findPrefixOf(input).isDefined) patterns.head.findPrefixOf(input).get
-      else firstMatch(input, patterns.tail)
-    }
-
-    def helper(input: String, patterns: List[Regex], ignored: List[Regex], result: List[String], position: Int): (List[String], Int) = {
-      if (input.isEmpty) (result.reverse, -1) // base case
-      else {
-        val first = firstMatch(input, patterns)
-        val second = firstMatch(input, ignored)
-        if (first == null) (result.reverse, position - input.length) // Return the current result when mismatch occurs
-        else if (first == second) helper(input.substring(first.length), patterns, ignored, result, position) // Recursive case: don't include the ignore
-        else helper(input.substring(first.length), patterns, ignored, first :: result, position)
-      }
-    }
-    helper(input, patterns, ignored, List(),input.length)
-  }
-
-  // Problem 2
+object PhoneMnemonic {
 
   val characters = (s: String) => s.toList.map("" + _)
 
@@ -56,5 +30,6 @@ object hw4 {
   val substrings = (s: String) => characters(s.substring(0, s.length - 1)).foldRight(List(List(s.substring(s.length-1))))(grow(_,_))
 
   val phoneMnemonics = (digits: String) => substrings(digits).flatMap(wordsForDigitsSequence)
+
 
 }

@@ -1,36 +1,3 @@
-import scala.util.matching._
-
-// Step 1
-
-def tokens(input : String, patterns : List[Regex], ignored: List[Regex]) : (List[String], Int) = {
-
-  def firstMatch(input : String, patterns : List[Regex]): String = {
-    if(patterns.isEmpty) null
-    else if(patterns.head.findPrefixOf(input).isDefined) patterns.head.findPrefixOf(input).get
-    else firstMatch(input, patterns.tail)
-  }
-
-  def helper(input: String, patterns: List[Regex], ignored: List[Regex], result: List[String], position: Int): (List[String], Int) = {
-    if (input.isEmpty) (result.reverse, -1) // base case
-    else {
-      val first = firstMatch(input, patterns)
-      val second = firstMatch(input, ignored)
-      if (first == null) (result.reverse, position - input.length) // Return the current result when mismatch occurs
-      else if (first == second) helper(input.substring(first.length), patterns, ignored, result, position) // Recursive case: don't include the ignore
-      else helper(input.substring(first.length), patterns, ignored, first :: result, position)
-    }
-  }
-  helper(input, patterns, ignored, List(),input.length)
-}
-
-assert(tokens("if(x<0) 0 else root(x);", List("if|def|val".r, """\p{L}(\p{L}|\p{N}|_)*""".r,
-  """[+-]?\p{N}+""".r, "[+*/%<=>-]".r, "[(){};]".r, """\p{Z}+""".r), List("""\p{Z}+""".r, """//.*""".r)) == (List("if", "(", "x", "<", "0", ")", "0", "else", "root", "(", "x", ")", ";"), -1))
-assert(tokens("if(x<0)& 0 else root(x);", List("if|def|val".r, """\p{L}(\p{L}|\p{N}|_)*""".r,
-  """[+-]?\p{N}+""".r, "[+*/%<=>-]".r, "[(){};]".r, """[:.]""".r, "\".*\"".r), List("""\p{Z}+""".r, """//.*""".r)) == (List("if", "(", "x", "<", "0", ")"), 7))
-
-// Step 2
-
-// No recursion!
 
 val characters = (s: String) => s.toList.map("" + _)
 characters("72251")
